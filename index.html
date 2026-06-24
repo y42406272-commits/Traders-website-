@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>मेरा MacroDroid ऑटोमेशन पैनल</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+        }
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+        input {
+            background: #444;
+            color: #fff;
+        }
+        button {
+            background-color: #ff0055;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e0004c;
+        }
+        .section {
+            border-top: 1px solid #444;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>MacroDroid Automation</h2>
+    <p>अपना Webhook URL यहाँ पेस्ट करें:</p>
+    <input type="text" id="webhookUrl" placeholder="https://macrodroid.com">
+
+    <!-- डायलॉग बॉक्स ट्रिगर करने का सेक्शन -->
+    <div class="section">
+        <h3>Display Dialog</h3>
+        <input type="text" id="dialogTitle" placeholder="Title (शीर्षक)">
+        <input type="text" id="dialogDesc" placeholder="Description (विवरण)">
+        <button onclick="sendDialog()">Test Dialog</button>
+    </div>
+
+    <!-- पॉपअप ट्रिगर करने का सेक्शन -->
+    <div class="section">
+        <h3>Popup (Toast)</h3>
+        <input type="text" id="toastInput" placeholder="Message (संदेश)">
+        <button onclick="sendToast()">Test Toast</button>
+    </div>
+</div>
+
+<script>
+    // डायलॉग बॉक्स भेजने का फंक्शन
+    function sendDialog() {
+        const baseUrl = document.getElementById('webhookUrl').value;
+        const title = encodeURIComponent(document.getElementById('dialogTitle').value);
+        const desc = encodeURIComponent(document.getElementById('dialogDesc').value);
+
+        if(!baseUrl) { alert("कृपया पहले Webhook URL डालें!"); return; }
+
+        // MacroDroid में डेटा भेजने के लिए URL के अंत में क्वेरी पैरामीटर जोड़े जाते हैं
+        const finalUrl = `${baseUrl}?title=${title}&description=${desc}`;
+        
+        executeWebhook(finalUrl);
+    }
+
+    // टोस्ट/पॉपअप संदेश भेजने का फंक्शन
+    function sendToast() {
+        const baseUrl = document.getElementById('webhookUrl').value;
+        const message = encodeURIComponent(document.getElementById('toastInput').value);
+
+        if(!baseUrl) { alert("कृपया पहले Webhook URL डालें!"); return; }
+
+        const finalUrl = `${baseUrl}?message=${message}`;
+        
+        executeWebhook(finalUrl);
+    }
+
+    // बैकएंड में रिक्वेस्ट भेजने का कॉमन फंक्शन
+    function executeWebhook(url) {
+        fetch(url, { mode: 'no-cors' }) // MacroDroid CORS ब्लॉक न करे इसलिए no-cors उपयोग किया है
+        .then(() => {
+            alert("कमांड भेज दी गई है! अपने फोन पर चेक करें।");
+        })
+        .catch(err => {
+            alert("सिग्नल भेजने में समस्या आई।");
+            console.error(err);
+        });
+    }
+</script>
+
+</body>
+  </html>
+
